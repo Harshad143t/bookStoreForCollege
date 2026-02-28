@@ -391,3 +391,25 @@ function closeBuyPage() {
     document.getElementById("buyPage").style.display = "none";
     document.getElementById("nav").style.filter = "none";
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  if (window.location.href.includes("createAc.html")) {
+
+    const box = document.createElement("div");
+    box.className = "warning-box";
+
+    box.innerHTML = `
+      <p>Make sure to note your ID and password. Because You won’t be able to recover them later as of now.</p>
+      <button class="warning-ok-btn">OK</button>
+    `;
+
+    document.body.appendChild(box);
+
+    box.querySelector(".warning-ok-btn").addEventListener("click", function () {
+      box.remove();
+    });
+
+  }
+
+});
