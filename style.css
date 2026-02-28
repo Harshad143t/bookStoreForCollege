@@ -426,7 +426,6 @@ body {
     font-size: 0.9rem;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
     max-width: 150px;
 }
 
@@ -828,4 +827,43 @@ body {
 .custom-dialog button:last-child {
     background: #dc3545;
     color: white;
+
+}
+
+
+.warning-box {
+  position: fixed;
+  top: 300px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffdddd;
+  color: #900;
+  padding: 18px 22px;
+  border: 2px solid #900;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  z-index: 9999;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  max-width: 90%;
+}
+
+.warning-box p {
+  margin: 0 0 12px 0;
+}
+
+.warning-ok-btn {
+  background: rgb(76, 106, 218);
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.warning-ok-btn:hover {
+  background: #b30000;
 }
