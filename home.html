@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Book-Mart-Home</title>
+</head>
+
+<body id="home">
+    <div id="nav">
+        <p id="log">BookMart</p>
+        <div id="searchdiv">
+            <input type="text" id="searchBook">
+            <button id="searchBtn" class="fa-solid fa-magnifying-glass"></button>
+        </div>
+        <button onclick="postBook()" id="postBook">Upload book</button>
+        <button id="profile" onclick="logInbtn()">Log in</button>
+
+        <span class="marquee" id="loggeduser">userId:</span>
+    </div>
+    <div id="container">
+        <div id="createBooksss" class="listbook">
+            <div id="bookSellPrice">
+                <input id="enterPrice" type="number" placeholder="Selling Price">
+            </div>
+            <div id="bookSellName">
+                <input id="enterbookname" type="text" placeholder="Book Name">
+            </div>
+            <div id="bookSellPhoto">
+                <input id="addphoto" type="text" placeholder="Photo">
+            </div>
+            <button onclick="cancel()" id="cancelBook">Cancel</button>
+            <button id="submitBook" onclick="addNewBook()">Post</button>
+        </div>
+        <div id="buyPage">
+            <img id="buyPageImg" src="" alt="book image">
+            <br>
+            <hr>
+            <P id="bookPageName">Book Name :</P>
+            <br>
+            <P id="bookPagePrice">Book Price :</P>
+            <br>
+            <P id="ContactNumber">Contact :</P>
+            <br>
+            <hr>
+            <P id="Para">Note : To purchase this book,
+                please reach out to the given
+                <U>contact number</U>. We kindly request
+                that the conversation remains about
+                the book, such as its condition, price,
+                and pickup details. Thank you for your
+                understanding!
+            </P>
+            <br>
+            <button id="DoneBtn" onclick="Done()">Done</button>
+        </div>
+    </div>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
