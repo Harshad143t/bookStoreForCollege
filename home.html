@@ -10,17 +10,23 @@
 </head>
 
 <body id="home">
-    <div id="nav">
-        <p id="log">BookMart</p>
-        <div id="searchdiv">
-            <input type="text" id="searchBook">
-            <button id="searchBtn" class="fa-solid fa-magnifying-glass"></button>
-        </div>
-        <button onclick="postBook()" id="postBook">Upload book</button>
-        <button id="profile" onclick="logInbtn()">Log in</button>
+    <nav id="nav" aria-label="Main navigation">
+        <p id="log">
+            <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+            BookMart
+        </p>
 
-        <span class="marquee" id="loggeduser">userId:</span>
-    </div>
+        <div id="searchdiv">
+            <input type="text" id="searchBook" placeholder="Search by book name" aria-label="Search books by name">
+            <button id="searchBtn" class="fa-solid fa-magnifying-glass" aria-label="Search books"></button>
+        </div>
+
+        <div class="nav-actions">
+            <button onclick="postBook()" id="postBook">Upload book</button>
+            <button id="profile" onclick="logInbtn()">Log in</button>
+            <span class="marquee" id="loggeduser">userId:</span>
+        </div>
+    </nav>
     <div id="container">
         <div id="createBooksss" class="listbook">
             <div id="bookSellPrice">
