@@ -312,18 +312,19 @@ body {
 #nav {
     width: 100%;
     height: auto;
-    background-color: var(--dark);
+    background: rgba(30, 58, 95, 0.96);
+    backdrop-filter: blur(6px);
     position: sticky;
     top: 0;
     z-index: 100;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     flex-direction: row;
     align-items: center;
-    gap: 15px;
+    gap: 14px;
     padding: 12px 20px;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 #log {
@@ -331,12 +332,10 @@ body {
     color: white;
     font-weight: 700;
     display: flex;
+    align-items: center;
     gap: 10px;
-}
-
-#log::before {
-    content: "";
-    font-size: 1.8rem;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
 }
 
 #nav p, #nav i {
@@ -346,7 +345,8 @@ body {
 #searchdiv {
     display: flex;
     flex: 1;
-    max-width: 500px;
+    max-width: 540px;
+    min-width: 220px;
 }
 
 #searchBook {
@@ -364,7 +364,7 @@ body {
 }
 
 #searchBook:focus {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.35);
 }
 
 #searchBtn {
@@ -380,6 +380,13 @@ body {
 
 #searchBtn:hover {
     background-color: #3a7cd6;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 #profile, #postBook {
@@ -427,6 +434,57 @@ body {
     white-space: nowrap;
     overflow: hidden;
     max-width: 150px;
+}
+
+@media (max-width: 980px) {
+    #nav {
+        flex-wrap: wrap;
+        row-gap: 10px;
+    }
+
+    #searchdiv {
+        order: 3;
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .nav-actions {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 640px) {
+    #nav {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    #log {
+        font-size: 1.25rem;
+    }
+
+    .nav-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    #postBook, #profile {
+        width: 100%;
+        padding: 0 12px;
+        font-size: 0.95rem;
+    }
+
+    #loggeduser {
+        grid-column: 1 / -1;
+        max-width: 100%;
+        text-align: center;
+    }
+
+    #searchBook {
+        font-size: 15px;
+    }
 }
 
 #container {
@@ -827,7 +885,6 @@ body {
 .custom-dialog button:last-child {
     background: #dc3545;
     color: white;
-
 }
 
 
@@ -867,3 +924,4 @@ body {
 .warning-ok-btn:hover {
   background: #b30000;
 }
+
