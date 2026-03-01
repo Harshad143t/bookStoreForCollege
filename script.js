@@ -4,12 +4,41 @@ function isSheetsConfigured() {
     return SHEETS_API_URL && !SHEETS_API_URL.includes("PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE");
 }
 
+// --- LOADING ANIMATION FUNCTIONS ---
+function showLoading(message = "Processing...") {
+    let loader = document.getElementById("global-loader");
+    if (!loader) {
+        loader = document.createElement("div");
+        loader.id = "global-loader";
+        Object.assign(loader.style, {
+            position: "fixed", top: "0", left: "0", width: "100%", height: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.8)", zIndex: "9999",
+            display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
+            fontFamily: "sans-serif", fontSize: "18px", color: "#1e3a5f", backdropFilter: "blur(5px)"
+        });
+        loader.innerHTML = `
+            <div style="width: 50px; height: 50px; border: 5px solid #e9ecef; border-top: 5px solid #4a90e2; border-radius: 50%; animation: spinLoader 1s linear infinite; margin-bottom: 15px;"></div>
+            <div id="loader-text" style="font-weight: 600;">${message}</div>
+            <style>@keyframes spinLoader { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+        `;
+        document.body.appendChild(loader);
+    } else {
+        document.getElementById("loader-text").innerText = message;
+        loader.style.display = "flex";
+    }
+}
+
+function hideLoading() {
+    const loader = document.getElementById("global-loader");
+    if (loader) loader.style.display = "none";
+}
+// ------------------------------------
+
 async function apiRequest(action, payload = {}) {
     if (!isSheetsConfigured()) {
         throw new Error("Google Sheets API URL is not configured yet.");
     }
 
-    // Use form-encoded body to avoid browser preflight issues with Apps Script.
     const formBody = new URLSearchParams({
         action,
         payload: JSON.stringify(payload)
@@ -59,7 +88,8 @@ async function fetchUsers() {
 document.addEventListener("DOMContentLoaded", async function () {
     const profileBtn = document.getElementById("profile");
     const searchBtn = document.getElementById("searchBtn");
-
+    const searchInput = document.getElementById("searchBook");
+    
     if (profileBtn) {
         setupProfileButton(profileBtn);
     }
@@ -68,9 +98,32 @@ document.addEventListener("DOMContentLoaded", async function () {
         searchBtn.addEventListener("click", searchBooks);
     }
 
+    if (searchInput) {
+        searchInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                searchBooks();
+            }
+        });
+    }
+
     const bookContainer = document.getElementById("container");
     if (bookContainer) {
         await loadAndDisplayBooks();
+    }
+
+    if (window.location.href.includes("createAc.html")) {
+        const box = document.createElement("div");
+        box.className = "warning-box";
+        box.innerHTML = `
+          <p>Make sure to note your ID and password. Because You won’t be able to recover them later as of now.</p>
+          <button class="warning-ok-btn">OK</button>
+        `;
+        document.body.appendChild(box);
+
+        box.querySelector(".warning-ok-btn").addEventListener("click", function () {
+            box.remove();
+        });
     }
 });
 
@@ -141,12 +194,12 @@ async function login(event) {
         return;
     }
 
+    showLoading("Signing in...");
     try {
         const users = await fetchUsers();
 
         if (Object.prototype.hasOwnProperty.call(users, id) && users[id] === pass) {
             localStorage.setItem("loggedUser", id);
-            alert("Logged in successfully.");
             window.location.href = "home.html";
             return;
         }
@@ -159,13 +212,13 @@ async function login(event) {
         alert("No ID found with such information!");
     } catch (error) {
         alert(`Login failed: ${error.message}`);
+    } finally {
+        hideLoading();
     }
 }
 
 async function creatId(event) {
-    if (event) {
-        event.preventDefault();
-    }
+    if (event) event.preventDefault();
 
     const userId = document.getElementById("number");
     const userPass = document.getElementById("Pass");
@@ -192,6 +245,7 @@ async function creatId(event) {
         return;
     }
 
+    showLoading("Creating account...");
     try {
         const users = await fetchUsers();
         if (Object.prototype.hasOwnProperty.call(users, id)) {
@@ -205,6 +259,8 @@ async function creatId(event) {
         window.location.href = "home.html";
     } catch (error) {
         alert(`Account creation failed: ${error.message}`);
+    } finally {
+        hideLoading();
     }
 }
 
@@ -262,6 +318,7 @@ async function addNewBook() {
         owner: loggedUser
     };
 
+    showLoading("Uploading book...");
     try {
         await apiRequest("createBook", { book });
 
@@ -271,6 +328,8 @@ async function addNewBook() {
         clearInputs();
     } catch (error) {
         alert(`Failed to post book: ${error.message}`);
+    } finally {
+        hideLoading();
     }
 }
 
@@ -281,11 +340,14 @@ async function loadAndDisplayBooks() {
     const existingBooks = Array.from(container.querySelectorAll(".books"));
     existingBooks.forEach((book) => book.remove());
 
+    showLoading("Loading books...");
     try {
         const storedBooks = await fetchBooks();
         storedBooks.forEach((book) => displayBook(book));
     } catch (error) {
         alert(`Could not load books: ${error.message}`);
+    } finally {
+        hideLoading();
     }
 }
 
@@ -342,15 +404,15 @@ function buyBook(owner, name, price, img) {
 
 async function removeBook(bookId, buttonElement) {
     showDialog("Are you sure you want to delete this book?", async () => {
+        showLoading("Deleting book...");
         try {
             await apiRequest("deleteBook", { id: bookId });
-
             const bookDiv = buttonElement.closest(".books");
-            if (bookDiv) {
-                bookDiv.remove();
-            }
+            if (bookDiv) bookDiv.remove();
         } catch (error) {
             alert(`Failed to delete book: ${error.message}`);
+        } finally {
+            hideLoading();
         }
     });
 }
@@ -363,6 +425,7 @@ function Done() {
 async function searchBooks() {
     const bookName = document.getElementById("searchBook").value.trim().toLowerCase();
 
+    showLoading("Searching...");
     try {
         const storedBooks = await fetchBooks();
         const container = document.getElementById("container");
@@ -379,6 +442,8 @@ async function searchBooks() {
         foundBooks.forEach((book) => displayBook(book));
     } catch (error) {
         alert(`Search failed: ${error.message}`);
+    } finally {
+        hideLoading();
     }
 }
 
@@ -391,25 +456,3 @@ function closeBuyPage() {
     document.getElementById("buyPage").style.display = "none";
     document.getElementById("nav").style.filter = "none";
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-
-  if (window.location.href.includes("createAc.html")) {
-
-    const box = document.createElement("div");
-    box.className = "warning-box";
-
-    box.innerHTML = `
-      <p>Make sure to note your ID and password. Because You won’t be able to recover them later as of now.</p>
-      <button class="warning-ok-btn">OK</button>
-    `;
-
-    document.body.appendChild(box);
-
-    box.querySelector(".warning-ok-btn").addEventListener("click", function () {
-      box.remove();
-    });
-
-  }
-
-});
